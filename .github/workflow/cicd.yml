@@ -1,0 +1,35 @@
+name: CI/CD Pipeline to Elastic Beanstalk
+
+on:
+  push:
+    branches: 
+      - elastic-beanstalk-ec2
+
+jobs:
+  build-and-deploy:
+    runs-on: [ ubuntu-latest ]
+    
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          
+      - name: Install Dependencies
+        run: npm install
+          
+      - name: Create deployment package
+        run: zip -r Devops-Blogs-github-actions-build.zip .
+        
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESSKEYS_USER_ECS_ACCESS_USER }}
+          aws_secret_key: ${{ secrets.AWS_IDSECRETKEYS_USER_ECS_ACCESS_USER }}
+          application_name: 'Devops-Blogs-github-actions'
+          environment_name: 'Devops-Blogs-github-actions-env'
+          version_label: ${{ github.sha }}
+          region: us-north-1
+          deployment_package: Devops-Blogs-github-actions-build.zip

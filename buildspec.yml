@@ -7,7 +7,7 @@ phases:
       
     commands:
       - echo "Installing AWS CLI"
-      - apt-get update && apt-get install -y awscli
+      - npm ci --legacy-peer-deps
 
   build:
     commands:

@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 22.15.0
+      
+    commands:
+      - echo "Installing AWS CLI"
+      - apt-get update && apt-get install -y awscli
+
+  build:
+    commands:
+      - echo "Syncing files to S3"
+      - npm run build
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist
+  discard-paths: no

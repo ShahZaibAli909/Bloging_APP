@@ -48,9 +48,12 @@ app.use((err, req, res, next) => {
 
 // Serve React app for non-API routes
 app.get('*', (req, res) => {
-  // For development, redirect to React dev server
+  // In development, just return a simple redirect message
   if (process.env.NODE_ENV !== 'production') {
-    return res.redirect(`https://${process.env.REPL_SLUG}-3000.${process.env.REPL_OWNER}.replit.dev${req.path}`);
+    return res.json({ 
+      message: 'This is the backend API. The React app should be accessed via the webview.',
+      api_health: '/api/health'
+    });
   }
   // In production, serve the built React app
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));

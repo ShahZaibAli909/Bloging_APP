@@ -1,0 +1,55 @@
+
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo Installing dependencies...
+      - cd server && npm install
+      - cd ../client && npm install
+      - cd ..
+  
+  pre_build:
+    commands:
+      - echo Running pre-build checks...
+      - echo Build started on `date`
+      - echo Testing server dependencies...
+      - cd server && npm list --depth=0
+      - echo Testing client dependencies...
+      - cd ../client && npm list --depth=0
+      - cd ..
+  
+  build:
+    commands:
+      - echo Building the application...
+      - echo Building React frontend...
+      - cd client && npm run build
+      - echo Frontend build completed
+      - cd ../server
+      - echo Backend is ready for deployment
+      - cd ..
+      - echo Creating deployment package...
+      - mkdir -p dist
+      - cp -r server/* dist/
+      - cp -r client/build dist/public
+      - echo Build completed on `date`
+  
+  post_build:
+    commands:
+      - echo Post-build phase...
+      - echo Listing build artifacts...
+      - ls -la dist/
+      - echo Build process completed successfully
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: 'dist'
+  name: fullstack-app-$(date +%Y-%m-%d-%H-%M-%S)
+
+cache:
+  paths:
+    - 'server/node_modules/**/*'
+    - 'client/node_modules/**/*'

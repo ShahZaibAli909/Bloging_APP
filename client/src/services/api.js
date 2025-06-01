@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '/api' 
+  ? 'http://backend:5000/api' 
   : `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.replit.dev/api`;
 
 const api = axios.create({

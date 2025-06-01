@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const path = require('path');
 require('dotenv').config();
 
 const userRoutes = require('./routes/users');
@@ -45,9 +46,19 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+// Serve React app for non-API routes
+app.get('*', (req, res) => {
+  // For development, redirect to React dev server
+  if (process.env.NODE_ENV !== 'production') {
+    return res.redirect(`https://${process.env.REPL_SLUG}-3000.${process.env.REPL_OWNER}.replit.dev${req.path}`);
+  }
+  // In production, serve the built React app
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
+
+// 404 handler for API routes only
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ message: 'API route not found' });
 });
 
 module.exports = app;

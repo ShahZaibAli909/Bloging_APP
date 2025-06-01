@@ -2,8 +2,8 @@
 import axios from 'axios';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'http://backend:5000/api' 
-  : `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.replit.dev/api`;
+  ? '/api' 
+  : `${window.location.protocol}//${window.location.hostname}:5000/api`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -12,55 +12,46 @@ const api = axios.create({
   },
 });
 
-// Users API
-export const fetchUsers = async () => {
-  try {
-    const response = await api.get('/users');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    throw error;
+// Request interceptor
+api.interceptors.request.use(
+  (config) => {
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
+);
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => {
+    return response.data;
+  },
+  (error) => {
+    console.error('API Error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// API functions
+export const fetchUsers = async () => {
+  return await api.get('/users');
 };
 
 export const createUser = async (userData) => {
-  try {
-    const response = await api.post('/users', userData);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating user:', error);
-    throw error;
-  }
+  return await api.post('/users', userData);
 };
 
 export const getUserById = async (id) => {
-  try {
-    const response = await api.get(`/users/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    throw error;
-  }
+  return await api.get(`/users/${id}`);
 };
 
 export const updateUser = async (id, userData) => {
-  try {
-    const response = await api.put(`/users/${id}`, userData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating user:', error);
-    throw error;
-  }
+  return await api.put(`/users/${id}`, userData);
 };
 
 export const deleteUser = async (id) => {
-  try {
-    const response = await api.delete(`/users/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    throw error;
-  }
+  return await api.delete(`/users/${id}`);
 };
 
 export default api;

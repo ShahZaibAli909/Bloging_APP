@@ -10,7 +10,7 @@ const Header = ({ user, onLogout }) => {
           <Link to="/">Full-Stack App</Link>
         </div>
         <nav className="nav">
-          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/" className="nav-link">Dashboard</Link>
           <Link to="/about" className="nav-link">About</Link>
           {user && (
             <div className="user-info">

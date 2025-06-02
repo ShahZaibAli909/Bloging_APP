@@ -22,32 +22,16 @@ phases:
       - cd ..
   
   build:
-    commands:
-      - echo Building the application...
-      - echo Building React frontend...
-      - cd client && npm run build
-      - echo Frontend build completed
-      - cd ../server
-      - echo Backend is ready for deployment
-      - cd ..
-      - echo Creating deployment package...
-      - mkdir -p dist
-      - cp -r server/* dist/
-      - cp -r client/build dist/public
-      - echo Build completed on `date`
-  
-  post_build:
-    commands:
-      - echo Post-build phase...
-      - echo Listing build artifacts...
-      - ls -la dist/
-      - echo Build process completed successfully
-
+  commands:
+    - cd client && npm run build
+    - cd ..
+    # Copy ONLY the React build files to dist/ (not server files)
+    - mkdir -p dist
+    - cp -r client/build/* dist/  # Moves index.html to root of 'dist/'
 artifacts:
-  files:
-    - '**/*'
-  base-directory: 'dist'
-  name: fullstack-app-$(date +%Y-%m-%d-%H-%M-%S)
+  base-directory: 'dist'  # Now, index.html is at root of S3
+  
+  
 
 cache:
   paths:

@@ -1,9 +1,8 @@
-
 version: '3.8'
 
 services:
   backend:
-    build: ./server
+    image: shahzaibcloud/devopsappimage:server  # Your Docker Hub image
     container_name: fullstack-backend
     ports:
       - "5000:5000"
@@ -21,7 +20,7 @@ services:
       start_period: 40s
 
   frontend:
-    build: ./client
+    image: shahzaibcloud/devopsappimage:client  # Your Docker Hub image
     container_name: fullstack-frontend
     ports:
       - "80:80"
